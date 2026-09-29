@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+results/
+# Python virtual environments (any name: .venv, venv, venv_test, etc.)
+.venv/
+venv/
+venv_*/
+env/
+# Conda env metadata if colocated
+.conda/
+
+.ipynb_checkpoints/
+*.egg-info/
