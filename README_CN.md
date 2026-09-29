@@ -154,7 +154,8 @@ pI-ESM/
 │   ├── 07_permutation_pka.py         # 1000 次置换重优化 9-pKa
 │   ├── 08_ipc2_protocol.py           # IPC2 评估口径复核
 │   ├── 09_prepare_structures.py      # 下载/修复实验 PDB 结构
-│   └── 10_structure_pI.py            # 从逐位点 pKa 计算结构 pI
+│   ├── 10_structure_pI.py            # 从逐位点 pKa 计算结构 pI
+│   └── 11_benchmark_inference_e2e.py  # 端到端推理时间基准测试（GPU + CPU）
 │
 ├── data/                     # 全部输入数据（已提交，共约 28 MB）
 │   ├── embeddings/           #   ESM-2 150M 七类嵌入（22 MB）
@@ -205,6 +206,8 @@ pI-ESM/
 | `pkalm_piprott.csv` | `data/benchmark/` | 14 KB | pKALM 官方 PIPROT 预测 |
 | `pypka_exp_z44.csv` | `data/benchmark/` | 18 KB | PypKa 实验结构预测 |
 | `perm_pka_samples.csv` / `perm_pka_summary.csv` | `data/reference_results/` | 184 KB | 冻结的 1000 次置换 pKa 样本与汇总 |
+| `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | 冻结的逐蛋白端到端推理时间（IPC2、IPC2.svr.19、pI-ESM GPU/CPU）|
+| `int8_deployment_description.txt` | `data/reference_results/` | 0.6 KB | INT8 部署推理描述与基准测试环境 |
 | `table_ipc2_protocol.csv` | `data/reference_results/` | 2 KB | 冻结的 IPC2 协议口径表 |
 | `alphafold2_structures.zip` | `data/structures/` | 28.9 MB | 581 条 AF2 预测结构（按 seq_no 命名）|
 | `experimental_pdb_A_high_confidence.zip` | `data/structures/` | 2.4 MB | 61 条高置信实验 PDB（A61 子集，Table 2）|

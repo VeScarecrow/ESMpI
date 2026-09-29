@@ -159,7 +159,8 @@ pI-ESM/
 │   ├── 07_permutation_pka.py         # 1000-iter permutation re-fit of 9-pKa
 │   ├── 08_ipc2_protocol.py           # IPC2 evaluation protocol check
 │   ├── 09_prepare_structures.py      # Download/repair experimental PDB structures
-│   └── 10_structure_pI.py            # Structure-based pI from per-residue pKa
+│   ├── 10_structure_pI.py            # Structure-based pI from per-residue pKa
+│   └── 11_benchmark_inference_e2e.py  # End-to-end inference time benchmark (GPU + CPU)
 │
 ├── data/                     # All input data (committed, ~28 MB total)
 │   ├── embeddings/           #   ESM-2 150M per-type embeddings (22 MB)
@@ -210,6 +211,8 @@ pI-ESM/
 | `pkalm_piprott.csv` | `data/benchmark/` | 14 KB | pKALM official PIPROT predictions |
 | `pypka_exp_z44.csv` | `data/benchmark/` | 18 KB | PypKa predictions on experimental structures |
 | `perm_pka_samples.csv` / `perm_pka_summary.csv` | `data/reference_results/` | 184 KB | Frozen 1000-iteration permutation pKa samples and summary |
+| `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | Frozen per-protein end-to-end inference times (IPC2, IPC2.svr.19, pI-ESM GPU/CPU) |
+| `int8_deployment_description.txt` | `data/reference_results/` | 0.6 KB | INT8 deployment inference description and benchmark environment |
 | `alphafold2_structures.zip` | `data/structures/` | 28.9 MB | 581 AF2-predicted structures (seq_no-named, from AF2 pipeline) |
 | `experimental_pdb_A_high_confidence.zip` | `data/structures/` | 2.4 MB | 61 high-confidence experimental PDBs (A61 subset, Table 2) |
 | `experimental_pdb_B_trusted.zip` | `data/structures/` | 3.5 MB | 73 trusted experimental PDBs |

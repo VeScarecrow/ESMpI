@@ -594,7 +594,7 @@ def fig_s3_source():
             color='#C97B5A', edgecolor='white')
     ax.set_xlabel('Experimental pI')
     ax.set_ylabel('Count')
-    ax.legend()
+    ax.legend(frameon=False)
     fig.tight_layout()
     for ext in ('png', 'pdf'):
         fig.savefig(str(SIDIR / f'si_figS3_source_distribution.{ext}'),

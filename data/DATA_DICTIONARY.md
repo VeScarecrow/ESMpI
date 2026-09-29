@@ -390,3 +390,28 @@ Bootstrap confidence intervals for the 9 GBMS pKa parameters.
 | `bjellqvist` | Bjellqvist scale value |
 
 **Rows:** 9.
+
+---
+
+### bench_inference_time_e2e.csv
+Per-protein end-to-end inference time on the 581-sequence test set (IPC_protein_25). Measured from raw amino-acid sequence to final pI value.
+
+| Column | Description |
+|--------|-------------|
+| `seq_no` | Protein ID (1–581) |
+| `length` | Sequence length (amino acids) |
+| `t_ipc2_s` | IPC2 9-pKa bisection time (seconds), CPU |
+| `t_svr19_s` | IPC2.svr.19 time (19 pKa baselines + SVR predict, seconds), CPU |
+| `t_piesm_gpu_s` | pI-ESM time (ESM-2 150M FP32 forward + pool + SVR, seconds), GPU |
+| `t_piesm_cpu_s` | pI-ESM time (ESM-2 150M FP32 forward + pool + SVR, seconds), CPU |
+
+**Rows:** 581.
+
+**Benchmark environment:**
+- Local: Intel Core i5-9400F (6 cores, 2.90 GHz), 16 GB RAM, Windows 10, Python 3.10, PyTorch 2.5.0, NVIDIA GeForce GTX 1060 6GB (CUDA).
+- Server (159.75.31.213:8000): Tencent Cloud Standard SA2 (AMD EPYC, 4 vCPUs, 8 GB RAM, Guangzhou Zone 3), CPU-only, INT8 quantized ESM-2 150M, 2 threads.
+
+---
+
+### int8_deployment_description.txt
+Short English description of the INT8 accelerated deployment inference and benchmark environment.
