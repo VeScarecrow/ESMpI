@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-04_bootstrap_intermethod: paired bootstrap pI-ESM vs IPC2-SVR.
+04_bootstrap_intermethod: paired bootstrap ESMpI vs IPC2-SVR.
 
 Migrated from z176_ours_vs_f19.py. Compares two methods on the 581-protein
 test set with stratified metrics and 2000-iteration paired bootstrap CIs:
-  ours : ESM2-150M residual SVR (pI-ESM, C=0.5, eps=0.05, sw-weighted)
+  ours : ESM2-150M residual SVR (ESMpI, C=0.5, eps=0.05, sw-weighted)
   F19  : IPC2_protein.SVR 19-dim pI features (C=1.0, eps=0.12)
 
 Stratification dimensions: data source (SWISS-2DPAGE / PIP-DB), sequence
@@ -20,7 +20,7 @@ Outputs:
 """
 import os, sys, pathlib
 sys.stdout.reconfigure(encoding='utf-8')
-# Make the piesm package importable (project root is one level up)
+# Make the esmpi package importable (project root is one level up)
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -30,7 +30,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr, spearmanr
-from piesm import dataio
+from esmpi import dataio
 
 # Output directories
 RESULTS = ROOT / "results"

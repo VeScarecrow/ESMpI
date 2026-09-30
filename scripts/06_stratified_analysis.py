@@ -20,7 +20,7 @@ Outputs:
 """
 import sys, os, pathlib
 sys.stdout.reconfigure(encoding='utf-8')
-# Make the piesm package importable (project root is one level up)
+# Make the esmpi package importable (project root is one level up)
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -28,7 +28,7 @@ import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from piesm import dataio
+from esmpi import dataio
 
 # Output directories
 RESULTS = ROOT / "results"

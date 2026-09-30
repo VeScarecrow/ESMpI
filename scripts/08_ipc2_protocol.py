@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
-from piesm import dataio
+from esmpi import dataio
 
 RESULTS = ROOT / "results"
 TABLES = RESULTS / "tables"
@@ -115,7 +115,7 @@ def main():
     seq_pred = {
         'IPC2_protein': preds['bt_ipc2'],
         'IPC2.svr.19':  preds['pt_f19'],
-        'pI-ESM':       preds['pt_ours'],
+        'ESMpI':       preds['pt_ours'],
         'GBMS':         fte['pI_our'].values,
     }
 

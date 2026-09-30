@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """models: SVR model factories and cross-validation helpers.
 
-Extracted from z164_common.py. Provides the pI-ESM residual SVR and the
+Extracted from z164_common.py. Provides the ESMpI residual SVR and the
 IPC2_protein F19-SVR, plus multi-seed 5-fold OOF evaluation.
 """
 from __future__ import annotations
@@ -23,7 +23,7 @@ F19 = ['pI_Bjellqvist', 'pI_DTASelect', 'pI_Dawson', 'pI_EMBOSS', 'pI_Grimsley',
 
 
 def make_esm_svr():
-    """pI-ESM model: StandardScaler + RBF-SVR (C=0.5, eps=0.05)."""
+    """ESMpI model: StandardScaler + RBF-SVR (C=0.5, eps=0.05)."""
     return make_pipeline(StandardScaler(),
                          SVR(kernel='rbf', C=0.5, gamma='scale', epsilon=0.05,
                              cache_size=2000))

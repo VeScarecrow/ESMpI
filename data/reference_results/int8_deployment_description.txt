@@ -1,3 +1,3 @@
-The pI-ESM model is deployed with an ONNX Runtime dynamically INT8-quantized ESM-2 150M encoder on CPU, reducing forward-pass latency while preserving prediction accuracy. The inference service operates with two CPU threads.
+The ESMpI model is deployed with an ONNX Runtime dynamically INT8-quantized ESM-2 150M encoder on CPU, reducing forward-pass latency while preserving prediction accuracy. The inference service operates with two CPU threads.
 
 Benchmark environment: All inference-time measurements were conducted on a local machine equipped with an Intel Core i5-9400F CPU (6 cores, 2.90 GHz), 16 GB RAM, and an NVIDIA GeForce GTX 1060 6GB GPU running Windows 10 with PyTorch 2.5.0 and CUDA. The deployed online service runs on a Tencent Cloud Standard SA2 instance (AMD EPYC, 4 vCPUs, 8 GB RAM, Guangzhou Zone 3) with CPU-only INT8 inference using two threads.

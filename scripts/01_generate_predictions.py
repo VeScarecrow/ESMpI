@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-01_generate_predictions: pI-ESM predictions and comparison analysis.
+01_generate_predictions: ESMpI predictions and comparison analysis.
 
 Migrated from z166_comparisons.py. Produces the core prediction file
-z166_preds.npz (pI-ESM + IPC2-SVR predictions on the 581-protein test set)
+z166_preds.npz (ESMpI + IPC2-SVR predictions on the 581-protein test set)
 plus pairwise comparison figures, pI-distribution tables, and physical
 baseline / encoder swap ablations.
 
 Outputs:
-  data/predictions/z166_preds.npz    pI-ESM + F19 predictions
+  data/predictions/z166_preds.npz    ESMpI + F19 predictions
   results/tables/z166_*.csv          comparison tables
   results/figures/fig_z166_*.png     comparison figures
 
@@ -18,7 +18,7 @@ because the ESM3 embeddings (1.4 GB) are not published. Only ESM2-150M
 """
 import sys, os, time, pathlib
 sys.stdout.reconfigure(encoding='utf-8')
-# Make the piesm package importable (project root is one level up)
+# Make the esmpi package importable (project root is one level up)
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -27,7 +27,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
-from piesm import dataio, pooling, models, metrics
+from esmpi import dataio, pooling, models, metrics
 
 # Output directories
 RESULTS = ROOT / "results"
@@ -149,7 +149,7 @@ plt.savefig(str(FIGURES / 'fig_z166_pka_swap.png'), dpi=180)
 plt.close()
 
 # ---------- 4) ESM encoder swap ----------
-# NOTE: Only ESM2-150M is retained (the published encoder used by pI-ESM).
+# NOTE: Only ESM2-150M is retained (the published encoder used by ESMpI).
 # ESMC-300M, ESMC-600M, ESM2-650M, ESM3-1.4B, and ESM2-35M comparisons are
 # omitted because their embedding files are not published.
 print('\nSwap ESM encoder:', flush=True)

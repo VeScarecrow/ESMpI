@@ -1,4 +1,4 @@
-# pI-ESM
+# ESMpI
 
 基于蛋白质语言模型的等电点（pI）预测。将 IPC2 九参数物理基线与 ESM-2 150M 残差 SVR 修正结合，
 仅使用氨基酸序列——不需要三维结构。
@@ -7,10 +7,10 @@
 
 | 方法 | RMSE | MAE | R² |
 |------|------|-----|-----|
-| pI-ESM（本文） | **0.8104** | 0.5573 | 0.6478 |
+| ESMpI（本文） | **0.8104** | 0.5573 | 0.6478 |
 | IPC2 SVR | 0.8552 | 0.5907 | 0.6077 |
 
-在 61 个高置信实验结构蛋白子集上，pI-ESM（RMSE 0.6064）与最佳结构方法 DeepKa（0.6058）持平。
+在 61 个高置信实验结构蛋白子集上，ESMpI（RMSE 0.6064）与最佳结构方法 DeepKa（0.6058）持平。
 
 ---
 
@@ -52,7 +52,7 @@ TRF 从 13 个起点中的任意一个确定性收敛，单起点约 0.4 秒，1
 
 ### 逐蛋白预测结果
 
-581 条测试集的逐蛋白预测（实验 pI、IPC2 基线、GBMS 基线、IPC2.svr.19、pI-ESM）
+581 条测试集的逐蛋白预测（实验 pI、IPC2 基线、GBMS 基线、IPC2.svr.19、ESMpI）
 已整理为可读 CSV：
 [results/tables/per_protein_predictions.csv](results/tables/per_protein_predictions.csv)
 
@@ -70,17 +70,17 @@ TRF 从 13 个起点中的任意一个确定性收敛，单起点约 0.4 秒，1
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/VeScarecrow/pI-ESM.git
-cd pI-ESM
+git clone https://github.com/VeScarecrow/ESMpI.git
+cd ESMpI
 
 # 2. 创建 conda 环境
-conda create -n piesm python=3.11 -y
-conda activate piesm
+conda create -n esmpi python=3.11 -y
+conda activate esmpi
 
 # 3. 安装核心依赖
 pip install -r requirements.txt
 
-# 4.（可选）完整 pI-ESM 预测需要 ESM-2 嵌入
+# 4.（可选）完整 ESMpI 预测需要 ESM-2 嵌入
 pip install torch transformers
 ```
 
@@ -88,8 +88,8 @@ pip install torch transformers
 
 ```bash
 # 1. 克隆并进入
-git clone https://github.com/VeScarecrow/pI-ESM.git
-cd pI-ESM
+git clone https://github.com/VeScarecrow/ESMpI.git
+cd ESMpI
 
 # 2. 创建虚拟环境
 python -m venv venv
@@ -99,7 +99,7 @@ venv\Scripts\activate          # Windows
 # 3. 安装核心依赖
 pip install -r requirements.txt
 
-# 4.（可选）完整 pI-ESM 预测需要 ESM-2 嵌入
+# 4.（可选）完整 ESMpI 预测需要 ESM-2 嵌入
 pip install torch transformers
 ```
 
@@ -115,7 +115,7 @@ pip install torch transformers
 # 仅物理基线（无需 GPU，秒出结果）
 python predict.py -s "MKKFFDSRREQQKFLDAVAEHGRPDQVNPTQFIKVDSSAYNGLTEFLVFDRYLDGFNLDFEGTRTTAHQKLIEEAIDAFIKHGNTNLTIADALKDKGYRVEGYLKGYVDGNLSTTAQFNQAFKEKVNRLPDGQVVDHLAQGQPVVTAEQYAANEKRQAFDQVTGLPGYTHPQTAAPRTL" --baseline-only
 
-# 完整 pI-ESM 预测（需要 torch + transformers，自动下载 ESM-2 150M）
+# 完整 ESMpI 预测（需要 torch + transformers，自动下载 ESM-2 150M）
 python predict.py -s "MKKFF..." --device cpu
 
 # 从 FASTA 文件批量预测
@@ -126,15 +126,15 @@ set ESM2_MODEL_PATH=C:\models\esm2_t30_150M_UR50D
 python predict.py -i my_proteins.fasta
 ```
 
-输出列：`id`、`sequence`、`length`、`pI_IPC2_baseline`、`pI_GBMS_baseline`、`pI_ESM`（仅完整模式）。
+输出列：`id`、`sequence`、`length`、`pI_IPC2_baseline`、`pI_GBMS_baseline`、`pI_ESMpI`（仅完整模式）。
 
 ---
 
 ## 项目结构
 
 ```
-pI-ESM/
-├── piesm/                    # 可导入的 Python 包（共享引擎 + 工具）
+ESMpI/
+├── esmpi/                    # 可导入的 Python 包（共享引擎 + 工具）
 │   ├── pka_engine.py         #   Henderson-Hasselbalch pI 二分求根 + 解析雅可比
 │   ├── dataio.py             #   数据加载、路径管理（相对路径）
 │   ├── pooling.py            #   ESM-2 七类残基加权池化（W_ELEGANT）
@@ -145,7 +145,7 @@ pI-ESM/
 ├── predict.py                # 预测用户序列的 pI（命令行工具）
 │
 ├── scripts/                  # 流水线脚本（按 01 → 10 顺序运行）
-│   ├── 01_generate_predictions.py   # pI-ESM 预测 → data/predictions/z166_preds.npz
+│   ├── 01_generate_predictions.py   # ESMpI 预测 → data/predictions/z166_preds.npz
 │   ├── 02_reproduce_benchmark.py    # 性能基准表格（581 全集 + 61 蛋白 PDB 子集）
 │   ├── 03_bootstrap_pka.py          # B=1000 pKa bootstrap 样本
 │   ├── 04_bootstrap_intermethod.py  # B=2000 配对 bootstrap
@@ -160,7 +160,7 @@ pI-ESM/
 ├── data/                     # 全部输入数据（已提交，共约 28 MB）
 │   ├── embeddings/           #   ESM-2 150M 七类嵌入（22 MB）
 │   ├── features/             #   物理特征（z81，4 MB）
-│   ├── predictions/          #   预计算的 pI-ESM 预测（61 KB，第一层锚点）
+│   ├── predictions/          #   预计算的 ESMpI 预测（61 KB，第一层锚点）
 │   ├── mapping/              #   seq_no → npz 行号映射 + 数据源标签
 │   ├── benchmark/            #   基准对比输入 CSV（8 个文件）
 │   ├── full_sources/         #   两个全量数据源 FASTA（SI Fig S3）
@@ -194,7 +194,7 @@ pI-ESM/
 | `z82_150m_pertype_test.npz` | `data/embeddings/` | 5.5 MB | ESM-2 150M 七类嵌入（测试集，581×7×640）|
 | `z81_features_train.csv` | `data/features/` | 3.1 MB | 物理特征 + 19 套 pKa 标度 pI（训练集）|
 | `z81_features_test.csv` | `data/features/` | 1.0 MB | 物理特征 + 19 套 pKa 标度 pI（测试集）|
-| `z166_preds.npz` | `data/predictions/` | 61 KB | 预计算的 pI-ESM + IPC2-SVR 测试预测（第一层锚点）|
+| `z166_preds.npz` | `data/predictions/` | 61 KB | 预计算的 ESMpI + IPC2-SVR 测试预测（第一层锚点）|
 | `z164_seqno2zidx.csv` | `data/mapping/` | 5 KB | seq_no → npz 行号映射 |
 | `z46d_source_labels.csv` | `data/mapping/` | 81 KB | 全量集数据源标签（PIP-DB=1380 / SWISS-2DPAGE=944，已修正版）|
 | `pip_db_normal.fasta` | `data/full_sources/` | 1.0 MB | PIP-DB 全量 2427 条（FASTA 头含实验 pI）|
@@ -206,7 +206,7 @@ pI-ESM/
 | `pkalm_piprott.csv` | `data/benchmark/` | 14 KB | pKALM 官方 PIPROT 预测 |
 | `pypka_exp_z44.csv` | `data/benchmark/` | 18 KB | PypKa 实验结构预测 |
 | `perm_pka_samples.csv` / `perm_pka_summary.csv` | `data/reference_results/` | 184 KB | 冻结的 1000 次置换 pKa 样本与汇总 |
-| `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | 冻结的逐蛋白端到端推理时间（IPC2、IPC2.svr.19、pI-ESM GPU/CPU）|
+| `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | 冻结的逐蛋白端到端推理时间（IPC2、IPC2.svr.19、ESMpI GPU/CPU）|
 | `int8_deployment_description.txt` | `data/reference_results/` | 0.6 KB | INT8 部署推理描述与基准测试环境 |
 | `table_ipc2_protocol.csv` | `data/reference_results/` | 2 KB | 冻结的 IPC2 协议口径表 |
 | `alphafold2_structures.zip` | `data/structures/` | 28.9 MB | 581 条 AF2 预测结构（按 seq_no 命名）|
@@ -233,7 +233,7 @@ pI-ESM/
 
 | 论文名称 | 类型 | CSV 列 / 来源 |
 |----------|------|---------------|
-| pI-ESM | 序列 | `z166_preds.npz` → `pt_ours`（IPC2 基线 + ESM-2 150M SVR 残差）|
+| ESMpI | 序列 | `z166_preds.npz` → `pt_ours`（IPC2 基线 + ESM-2 150M SVR 残差）|
 | IPC2.protein.svr.19 | 序列 | F19 特征 → SVR(C=1.0, epsilon=0.12) |
 | IPC2_protein | 序列 | IPC2 发表 9-pKa H-H pI |
 | pKALM | 序列 | `pkalm_piprott.csv`（官方服务器）|
@@ -266,7 +266,7 @@ python scripts/02_reproduce_benchmark.py
 > 步骤 3/4/7 涉及上千次 bootstrap/置换，单核耗时数小时，可适当调小 `B` 先验证流程。
 
 ```bash
-# 步骤 1：从 ESM-2 150M 嵌入重新生成 pI-ESM 预测（≈12 min）
+# 步骤 1：从 ESM-2 150M 嵌入重新生成 ESMpI 预测（≈12 min）
 python scripts/01_generate_predictions.py
 
 # 步骤 2：复现基准表格（第一层也可独立运行）
@@ -275,7 +275,7 @@ python scripts/02_reproduce_benchmark.py
 # 步骤 3：pKa 参数 bootstrap（B=1000，Figure 4 数据）
 python scripts/03_bootstrap_pka.py
 
-# 步骤 4：方法间配对 bootstrap（B=2000，pI-ESM vs IPC2-SVR）
+# 步骤 4：方法间配对 bootstrap（B=2000，ESMpI vs IPC2-SVR）
 python scripts/04_bootstrap_intermethod.py
 
 # 步骤 5：生成论文图片（正文 Figure 2/3/4 + SI Figure S1–S4）
@@ -299,11 +299,11 @@ python scripts/08_ipc2_protocol.py
 
 | 输出 | 生成脚本 | 内容 |
 |------|----------|------|
-| `paper_fig2_scatter` | 05 | pI-ESM vs 实验 pI 散点：黑色全线与橙色离群点拟合线（误差>0.5）|
-| `paper_fig3_effects` | 05 | 四面板对比——GBMS vs pI-ESM 密度散点、酸/碱 pI、数据来源、蛋白长度 |
+| `paper_fig2_scatter` | 05 | ESMpI vs 实验 pI 散点：黑色全线与橙色离群点拟合线（误差>0.5）|
+| `paper_fig3_effects` | 05 | 四面板对比——GBMS vs ESMpI 密度散点、酸/碱 pI、数据来源、蛋白长度 |
 | `paper_fig4_bootstrap` | 05 | 9 参数 pKa 的 B=1000 bootstrap 分布 |
 | `si_figS1_pI_distribution` | 05 | 训练/测试集实验 pI 分布 |
-| `si_figS2_pairwise` | 05 | 实验 / GBMS / IPC2.svr.19 / pI-ESM 两两相关（n=581）|
+| `si_figS2_pairwise` | 05 | 实验 / GBMS / IPC2.svr.19 / ESMpI 两两相关（n=581）|
 | `si_figS3_source_distribution` | 05 | PIP-DB（2427）与 SWISS-2DPAGE（1054）全量数据源 pI 分布 |
 | `si_figS4_perm_pka` | 05 | 1000 次置换实验的 9-pKa 分布 |
 | `table_ipc2_protocol.csv` | 08 | 16 种方法的 pooled / 10 折 CV / IPC2 论文印刷值对比 |
@@ -334,7 +334,7 @@ IPC_protein 的 200 折 RMSE = 0.8675，与论文印刷值 0.8677 仅差 0.0002�
 如果使用本代码，请引用：
 
 ```bibtex
-@article{luo2026piesm,
+@article{luo2026esmpi,
   title={Protein language model-boosted prediction of isoelectric point},
   author={Luo, Fangfang and Lu, Xiangxiang and Cai, Zhitao and Wu, Riting and Su, Shubin and Huang, Yandong},
   journal={Journal of Molecular Biology},

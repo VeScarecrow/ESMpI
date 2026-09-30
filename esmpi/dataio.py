@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dataio: data loading and sequence feature extraction for pI-ESM.
+"""dataio: data loading and sequence feature extraction for ESMpI.
 
 Extracted from z164_common.py. Reads the z81 feature tables, builds 9-dim
 ionizable-group count vectors, KFold splits, and sample weights.
@@ -14,7 +14,7 @@ from sklearn.model_selection import KFold
 
 from .pka_engine import compute_pI
 
-# Project root (one level above the piesm/ package directory)
+# Project root (one level above the esmpi/ package directory)
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 

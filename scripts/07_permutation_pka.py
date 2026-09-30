@@ -31,7 +31,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 from scipy.optimize import least_squares
-from piesm import dataio
+from esmpi import dataio
 
 # ---------------- constants ----------------
 N_ITER = 1000
@@ -41,7 +41,7 @@ BOX1 = np.full(9, 14.0)
 NAMES = ['N_TER', 'C_TER', 'asp', 'glu', 'his', 'lys', 'cys', 'tyr', 'arg']
 THURL9 = np.array([8.00, 3.67, 3.67, 4.25, 6.54, 10.40, 8.55, 9.84, 12.00])
 IPC1 = np.array([9.094, 2.869, 3.872, 4.412, 5.637, 9.052, 7.555, 10.85, 11.84])
-from piesm.pka_engine import PKA_IPC2_PAPER as IPC2
+from esmpi.pka_engine import PKA_IPC2_PAPER as IPC2
 
 RESULTS = ROOT / "results"
 BOOT = RESULTS / "bootstrap"

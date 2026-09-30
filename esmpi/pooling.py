@@ -2,7 +2,7 @@
 """pooling: ESM2 embedding loading and 7-type weighted pooling.
 
 Extracted from z164_common.py. Only the ESM2-150M entry is retained
-(the only encoder used by the published pI-ESM model).
+(the only encoder used by the published ESMpI model).
 """
 from __future__ import annotations
 

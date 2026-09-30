@@ -1,2 +1,5 @@
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.npz filter=lfs diff=lfs merge=lfs -text
+# Small prediction anchors are stored as regular Git blobs (committed before LFS)
+data/predictions/z166_preds.npz -filter -diff -merge
+data/benchmark/z166_preds.npz -filter -diff -merge

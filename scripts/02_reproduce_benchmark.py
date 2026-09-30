@@ -90,12 +90,12 @@ ipc = pd.read_csv(os.path.join(INP, "IPC_protein_25.csv"))
 
 seqs = {i + 1: str(s).strip().upper() for i, s in enumerate(ipc["sequence"])}
 
-# pI-ESM (this work): IPC2 pKa baseline + ESM-2 residual SVR.
+# ESMpI (this work): IPC2 pKa baseline + ESM-2 residual SVR.
 # z166 array index != seq_no, must be mapped via z164_seqno2zidx.csv; yte order verified to match exp_pI.
 _npz = np.load(os.path.join(INP, "z166_preds.npz"), allow_pickle=True)
 _map = pd.read_csv(os.path.join(INP, "z164_seqno2zidx.csv"))
 _pt_ours = _npz["pt_ours"]
-pI_ESM = {int(sn): float(_pt_ours[int(zi)])
+pI_ESMpI = {int(sn): float(_pt_ours[int(zi)])
           for sn, zi in zip(_map["seq_no"], _map["zidx"])}
 
 d = (fall
@@ -104,7 +104,7 @@ d = (fall
      .merge(pk[["seq_no", "pI_pKALM"]], on="seq_no")
      .merge(reg[["seq_no", "source", "conf_class"]], on="seq_no"))
 d["pI_pureThurl"] = d.seq_no.map(lambda s: round(thurlkill_pi(seqs[int(s)]), 4))
-d["pI_pIESM"] = d.seq_no.map(lambda s: round(pI_ESM.get(int(s)), 4))
+d["pI_ESMpI"] = d.seq_no.map(lambda s: round(pI_ESMpI.get(int(s)), 4))
 
 # PypKa pure AF2 structure track (output of compute_pypka_af2_pi.py, unfinished seqs are NaN)
 paf_path = os.path.join(OUT, "pypka_af2_pi.csv")
@@ -127,7 +127,7 @@ METHODS = [
     ("DeepKa+SA+IPC2 (exp_PDB)",    "M5_DeepKa_SA_ipc",    "Structure"),
     ("PypKa+Thurl (exp_PDB)",       "M7_PypKa_Thurl",      "Structure"),
     ("Thurlkill_baseline",          "pI_pureThurl",        "Seq_baseline"),
-    ("pI-ESM (this_work)",          "pI_pIESM",            "Sequence"),
+    ("ESMpI (this_work)",          "pI_ESMpI",            "Sequence"),
     ("Our 9-param",                 "M3_our_9param",       "Sequence"),
     ("IPC2 9-param",                "M3_ipc_9param",       "Sequence"),
     ("IPC2 SVR",                    "M8_IPC2_svr",         "Sequence"),
@@ -179,7 +179,7 @@ da = (afm
       .merge(pk[["seq_no", "pI_pKALM"]], on="seq_no", how="left"))
 # afm already contains source/conf_class, no need to merge reg again
 da["pI_pureThurl"] = da.seq_no.map(lambda s: round(thurlkill_pi(seqs[int(s)]), 4))
-da["pI_pIESM"] = da.seq_no.map(lambda s: round(pI_ESM.get(int(s)), 4))
+da["pI_ESMpI"] = da.seq_no.map(lambda s: round(pI_ESMpI.get(int(s)), 4))
 if os.path.exists(paf_path):
     paf = pd.read_csv(paf_path)[["seq_no", "pI_pypka_AF2"]]
     da = da.merge(paf, on="seq_no", how="left")
@@ -189,13 +189,13 @@ else:
 # 581 per-protein full-method detail (including PypKa AF2 column, unfinished are NaN)
 af_cols = [c for c in afm.columns if c != "seq_no"]
 keep_cols = ["seq_no", "source", "conf_class", "exp_pI",
-             "pI_pIESM", "pI_pureThurl", "pI_pKALM", "pI_pypka_AF2"] + af_cols
+             "pI_ESMpI", "pI_pureThurl", "pI_pKALM", "pI_pypka_AF2"] + af_cols
 keep_cols = list(dict.fromkeys(keep_cols))   # af_cols contains source/conf_class/exp_pI, deduplicate preserving order
 da[keep_cols].to_csv(os.path.join(OUT, "bench_all581_per_protein.csv"),
                      index=False, encoding="utf-8-sig")
 
 METHODS_ALL = [
-    ("pI-ESM (this_work)",        "pI_pIESM",               "Sequence"),
+    ("ESMpI (this_work)",        "pI_ESMpI",               "Sequence"),
     ("IPC2 SVR",                 "M8_IPC2_svr",            "Sequence"),
     ("DeepKa+SA+IPC2 (AF_primary)",  "M5_DeepKa_SA_ipc_AF",    "Structure"),
     ("IPC2 9-param",             "M3_ipc_9param_AF",       "Sequence"),

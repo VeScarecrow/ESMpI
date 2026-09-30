@@ -156,11 +156,11 @@ Frozen model predictions (NumPy compressed archive).
 
 | Key | Shape | Description |
 |-----|-------|-------------|
-| `pt_ours` | (581,) | pI-ESM test-set predictions |
+| `pt_ours` | (581,) | ESMpI test-set predictions |
 | `pt_f19` | (581,) | IPC2.svr.19 (F19) test-set predictions |
 | `bt_ipc2` | (581,) | IPC2 published pKa → HH → pI (baseline) |
 | `yte` | (581,) | Experimental pI (test set) |
-| `oof_ours` | (1743,) | pI-ESM out-of-fold predictions (training set) |
+| `oof_ours` | (1743,) | ESMpI out-of-fold predictions (training set) |
 | `ytr` | (1743,) | Experimental pI (training set) |
 | `bo` | (1743,) | IPC2 published pKa → HH → pI (training set, out-of-fold) |
 
@@ -402,8 +402,8 @@ Per-protein end-to-end inference time on the 581-sequence test set (IPC_protein_
 | `length` | Sequence length (amino acids) |
 | `t_ipc2_s` | IPC2 9-pKa bisection time (seconds), CPU |
 | `t_svr19_s` | IPC2.svr.19 time (19 pKa baselines + SVR predict, seconds), CPU |
-| `t_piesm_gpu_s` | pI-ESM time (ESM-2 150M FP32 forward + pool + SVR, seconds), GPU |
-| `t_piesm_cpu_s` | pI-ESM time (ESM-2 150M FP32 forward + pool + SVR, seconds), CPU |
+| `t_esmpi_gpu_s` | ESMpI time (ESM-2 150M FP32 forward + pool + SVR, seconds), GPU |
+| `t_esmpi_cpu_s` | ESMpI time (ESM-2 150M FP32 forward + pool + SVR, seconds), CPU |
 
 **Rows:** 581.
 

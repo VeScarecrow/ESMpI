@@ -5,7 +5,7 @@ predict: predict isoelectric point (pI) for user-provided protein sequences.
 Two modes:
   1. Full mode (requires GPU + transformers + fair-esm): extracts ESM-2 150M
      embeddings, applies 7-type weighted pooling, and predicts with the
-     published pI-ESM residual SVR model.
+     published ESMpI residual SVR model.
   2. Fallback mode (no GPU): computes only the IPC2 9-pKa physical baseline
      via the Henderson-Hasselbalch bisection engine. No ESM embedding needed.
 
@@ -14,7 +14,7 @@ Usage:
   python predict.py --sequence "MKKFF..." [--device cpu]
 
 Input:  FASTA file (one or more sequences) or a single sequence string.
-Output: CSV with columns [id, sequence, length, pI_IPC2_baseline, pI_ESM (if available)].
+Output: CSV with columns [id, sequence, length, pI_IPC2_baseline, pI_ESMpI (if available)].
 """
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 
-from piesm import dataio, pka_engine
+from esmpi import dataio, pka_engine
 
 # IPC2 published 9-pKa values (used as physical baseline)
 PKA_IPC2 = pka_engine.PKA_IPC2_PAPER
@@ -69,7 +69,7 @@ def predict_baseline(sequences):
 
 
 def predict_esm(sequences, device='auto'):
-    """Full pI-ESM prediction: ESM-2 embedding + SVR.
+    """Full ESMpI prediction: ESM-2 embedding + SVR.
 
     Requires: torch, transformers. Falls back to baseline-only
     if any dependency is missing or the model cannot be downloaded.
@@ -126,8 +126,8 @@ def predict_esm(sequences, device='auto'):
         if (i + 1) % 50 == 0:
             print(f"  embedded {i+1}/{len(sequences)} sequences", flush=True)
 
-    # 7-type weighted pooling (matches piesm.pooling)
-    from piesm.pooling import W_ELEGANT
+    # 7-type weighted pooling (matches esmpi.pooling)
+    from esmpi.pooling import W_ELEGANT
     SITE7 = ['D', 'E', 'H', 'K', 'C', 'Y', 'R']
     H = embeddings[0].shape[1]  # 640
 
@@ -147,7 +147,7 @@ def predict_esm(sequences, device='auto'):
             pooled[i] = (np.einsum('k,kh->h', wc[0], pt) / total).astype(np.float32)
 
     # Load pre-computed training embeddings and train SVR on the fly
-    from piesm import pooling, models
+    from esmpi import pooling, models
     print("Loading training embeddings for SVR retraining ...")
     Xtr, _ = pooling.load_emb_pool('ESM2-150M', pooling.W_ELEGANT)
     d = dataio.load_data()
@@ -162,8 +162,8 @@ def predict_esm(sequences, device='auto'):
     # Baseline for new sequences
     _, pI_gbms = predict_baseline(sequences)
     correction = est.predict(pooled)
-    pI_esm = pI_gbms + correction
-    return pI_esm
+    pI_esmpi = pI_gbms + correction
+    return pI_esmpi
 
 
 def main():
@@ -208,10 +208,10 @@ def main():
     pI_ipc2, pI_gbms = predict_baseline(sequences)
     print(f"Baseline pI computed ({time.time()-t0:.1f}s)")
 
-    # Full pI-ESM prediction
-    pI_esm = None
+    # Full ESMpI prediction
+    pI_esmpi = None
     if not args.baseline_only:
-        pI_esm = predict_esm(sequences, device=args.device)
+        pI_esmpi = predict_esm(sequences, device=args.device)
 
     # Build output
     out = pd.DataFrame({
@@ -221,8 +221,8 @@ def main():
         'pI_IPC2_baseline': np.round(pI_ipc2, 4),
         'pI_GBMS_baseline': np.round(pI_gbms, 4),
     })
-    if pI_esm is not None:
-        out['pI_ESM'] = np.round(pI_esm, 4)
+    if pI_esmpi is not None:
+        out['pI_ESMpI'] = np.round(pI_esmpi, 4)
 
     if args.output:
         out.to_csv(args.output, index=False, encoding='utf-8-sig')

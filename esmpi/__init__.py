@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""piesm: pI-ESM prediction and reproduction package.
+"""esmpi: ESMpI prediction and reproduction package.
 
-Self-contained package for reproducing the pI-ESM isoelectric point
+Self-contained package for reproducing the ESMpI isoelectric point
 prediction results. Provides the pI bisection engine, data loading,
 ESM2 embedding pooling, SVR models, and evaluation metrics.
 """

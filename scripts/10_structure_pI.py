@@ -38,13 +38,13 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 
-from piesm.structure import (
+from esmpi.structure import (
     THURL, AA3, ACID, SIDE_GROUPS, DEHK,
     empty_sites, assemble, structure_pi, thurlkill_pi, pi_from_pairs,
     sites_to_rows,
 )
-from piesm.dataio import DATA_DIR, seq_counts
-from piesm.pka_engine import compute_pI, PKA_IPC2_PAPER
+from esmpi.dataio import DATA_DIR, seq_counts
+from esmpi.pka_engine import compute_pI, PKA_IPC2_PAPER
 
 DATA = ROOT / "data"
 SEQ_CSV = DATA / "benchmark" / "IPC_protein_25.csv"

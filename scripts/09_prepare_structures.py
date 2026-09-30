@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 import pandas as pd
 import numpy as np
 
-from piesm.structure import THURL, AA3, ACID, SIDE_GROUPS, DEHK
+from esmpi.structure import THURL, AA3, ACID, SIDE_GROUPS, DEHK
 
 DATA = ROOT / "data"
 REG_CSV = DATA / "benchmark" / "reg_581.csv"

@@ -19,7 +19,7 @@ Outputs:
 """
 import sys, os, time, math, pathlib
 sys.stdout.reconfigure(encoding='utf-8')
-# Make the piesm package importable (project root is one level up)
+# Make the esmpi package importable (project root is one level up)
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -29,7 +29,7 @@ from sklearn.model_selection import KFold
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from piesm import pka_engine as C, dataio, pooling, models, metrics
+from esmpi import pka_engine as C, dataio, pooling, models, metrics
 
 # Output directories
 RESULTS = ROOT / "results"

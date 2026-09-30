@@ -30,7 +30,7 @@ import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from piesm import dataio
+from esmpi import dataio
 
 # ---------------- global journal style ----------------
 plt.rcParams.update({
@@ -45,7 +45,7 @@ plt.rcParams.update({
 })
 # ---- low-saturation palette ----
 C_REF_RED  = '#B32E1B'   # Fig 4 IPC2 dashed line (published figure)
-C_OURS     = '#E06A6F'   # pI-ESM bars / SI S4 IPC2 line
+C_OURS     = '#E06A6F'   # ESMpI bars / SI S4 IPC2 line
 C_CI       = '#DBD7B0'   # 95% CI shade
 C_SVR      = '#D9D9D9'   # IPC2.svr bars
 C_PT       = '#6E97B3'   # scatter fill
@@ -295,7 +295,7 @@ def _panel_letters(fig, axes_grid, labels=None, fontsize=12, dy=0.004,
 
 
 # ============================================================
-# Figure 2: pI-ESM vs Expt pI, All + Outlier OLS lines
+# Figure 2: ESMpI vs Expt pI, All + Outlier OLS lines
 # ============================================================
 def fig2():
     k, b = np.polyfit(yte, ours, 1)
@@ -312,8 +312,8 @@ def fig2():
     ax.plot(xx, k_out * xx + b_out, '-', color=C_OUTLIER, lw=1.7, label='Outlier')
     ax.set_xlim(LIM); ax.set_ylim(LIM)
     ax.set_xticks(TICKS2); ax.set_yticks(TICKS2)
-    ax.set_xlabel('Expt. pI')
-    ax.set_ylabel('pI-ESM')
+    ax.set_xlabel('Expt pI')
+    ax.set_ylabel('ESMpI pI')
     ax.legend(loc='upper left', frameon=False, handlelength=1.6)
     for ext in ('png', 'pdf'):
         fig.savefig(str(PFDIR / f'paper_fig2_scatter.{ext}'), dpi=DPI,
@@ -323,7 +323,7 @@ def fig2():
 
 
 # ============================================================
-# Figure 3: A GBMS-vs-pI-ESM heat scatter; B pI acid/base;
+# Figure 3: A GBMS-vs-ESMpI heat scatter; B pI acid/base;
 #           C data source; D length (panels A/C top, B/D bottom)
 # ============================================================
 def fig3():
@@ -331,7 +331,7 @@ def fig3():
     plt.subplots_adjust(left=0.205, right=0.985, bottom=0.155, top=0.90,
                         wspace=0.46, hspace=0.58)
 
-    # ---- A: GBMS physical pI vs pI-ESM (density heat scatter) ----
+    # ---- A: GBMS physical pI vs ESMpI (density heat scatter) ----
     axa = axes[0][0]
     for _sp in axa.spines.values():
         _sp.set_zorder(10)
@@ -352,7 +352,7 @@ def fig3():
     axa.set_xlim(LIM); axa.set_ylim(LIM)
     axa.set_xticks(TICKS2); axa.set_yticks(TICKS2)
     axa.set_xlabel('IPC2 pI', fontsize=9)
-    axa.set_ylabel('pI-ESM pI', fontsize=9)
+    axa.set_ylabel('ESMpI pI', fontsize=9)
     axa.tick_params(axis='x', labelsize=8, length=2.2)
     yticks_in(axa, 8)
     axa.tick_params(axis='y', length=2.2)
@@ -363,7 +363,7 @@ def fig3():
         vo = [rmse_m(ours, mk) for _, mk in groups]
         vf = [rmse_m(f19, mk) for _, mk in groups]
         ax.bar(xx - w / 2, vo, w, color=C_OURS, edgecolor='none',
-               label='pI-ESM', zorder=3)
+               label='ESMpI', zorder=3)
         ax.bar(xx + w / 2, vf, w, facecolor=C_SVR, edgecolor='none',
                label='IPC2.svr.19', zorder=3)
         ax.set_xticks(xx)
@@ -497,11 +497,11 @@ def fig4():
 def fig_s1():
     fig, ax = plt.subplots(figsize=(6, 3.6))
     bins = np.linspace(1, 12.5, 46)
-    ax.hist(ytr, bins=bins, alpha=0.55, label=f'Train (n={len(ytr)})',
+    ax.hist(ytr, bins=bins, alpha=0.55, label=f'IPC_protein_75 (n={len(ytr)})',
             color='#4A90D9', edgecolor='white')
-    ax.hist(yte, bins=bins, alpha=0.55, label=f'Test (n={len(yte)})',
+    ax.hist(yte, bins=bins, alpha=0.55, label=f'IPC_protein_25 (n={len(yte)})',
             color=C_OUTLIER, edgecolor='white')
-    ax.set_xlabel('Experimental pI'); ax.set_ylabel('Count'); ax.legend()
+    ax.set_xlabel('Experimental pI'); ax.set_ylabel('Count'); ax.legend(frameon=False)
     fig.tight_layout()
     for ext in ('png', 'pdf'):
         fig.savefig(str(SIDIR / f'si_figS1_pI_distribution.{ext}', ), dpi=DPI)
@@ -515,7 +515,7 @@ def fig_s1():
 def fig_s2():
     from scipy.stats import pearsonr
     cols = [('Experimental pI', yte), ('IPC2 9-pKa', bt),
-            ('IPC2.SVR (F19)', f19), ('pI-ESM', ours)]
+            ('IPC2.SVR (F19)', f19), ('ESMpI', ours)]
     P = np.column_stack([c[1] for c in cols])
     fig, axes = plt.subplots(4, 4, figsize=(11, 10))
     for i in range(4):

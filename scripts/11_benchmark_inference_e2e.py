@@ -5,8 +5,8 @@ End-to-end inference time benchmark on the 581-sequence test set (IPC_protein_25
 Measures the TRUE per-protein latency from raw amino acid sequence -> pI value:
 - IPC2:         seq -> seq_counts -> 9-pKa bisection (no ML, pure Python+numpy, CPU)
 - IPC2.svr.19:  seq -> 19 pKa-scale pI features (bisection per scale) -> SVR predict (CPU)
-- pI-ESM (GPU): seq -> ESM-2 150M transformer forward (CUDA) -> 7-type pool -> SVR predict
-- pI-ESM (CPU): seq -> ESM-2 150M transformer forward (CPU) -> 7-type pool -> SVR predict
+- ESMpI (GPU): seq -> ESM-2 150M transformer forward (CUDA) -> 7-type pool -> SVR predict
+- ESMpI (CPU): seq -> ESM-2 150M transformer forward (CPU) -> 7-type pool -> SVR predict
 
 This is the latency a real user experiences when calling predict.py.
 """
@@ -17,10 +17,10 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 
-from piesm.dataio import load_data, seq_counts, DATA_DIR
-from piesm.pka_engine import compute_pI, PKA_IPC2_PAPER
-from piesm.pooling import W_ELEGANT
-from piesm.models import F19, make_esm_svr, make_f19_svr, fit_weighted
+from esmpi.dataio import load_data, seq_counts, DATA_DIR
+from esmpi.pka_engine import compute_pI, PKA_IPC2_PAPER
+from esmpi.pooling import W_ELEGANT
+from esmpi.models import F19, make_esm_svr, make_f19_svr, fit_weighted
 
 # ---------- Load test sequences ----------
 d = load_data()
@@ -57,7 +57,7 @@ for i in range(N):
     _ = svr19.predict(Xte_f19[i:i+1])
     t_svr19[i] = time.perf_counter() - t0
 
-# ---------- Method 3: pI-ESM on GPU and CPU ----------
+# ---------- Method 3: ESMpI on GPU and CPU ----------
 print('Loading ESM-2 150M ...')
 os.environ['HF_HUB_OFFLINE'] = '1'  # use local cache, no network
 import torch
@@ -67,7 +67,7 @@ model_name = 'facebook/esm2_t30_150M_UR50D'
 tokenizer = EsmTokenizer.from_pretrained(model_name)
 
 # Train SVR on precomputed train embeddings (do once)
-from piesm.pooling import load_emb_pool
+from esmpi.pooling import load_emb_pool
 Xtr_emb, Xte_emb = load_emb_pool('ESM2-150M', W_ELEGANT)
 btr = ftr['pI_IPC2_protein'].values.astype(np.float64)
 bte = fte['pI_IPC2_protein'].values.astype(np.float64)
@@ -130,8 +130,8 @@ def run_esm_bench(device_name):
     return t_arr
 
 
-t_piesm_gpu = run_esm_bench('cuda')
-t_piesm_cpu = run_esm_bench('cpu')
+t_esmpi_gpu = run_esm_bench('cuda')
+t_esmpi_cpu = run_esm_bench('cpu')
 
 # ---------- Save CSV ----------
 out_csv = ROOT / 'results' / 'tables' / 'bench_inference_time_e2e.csv'
@@ -141,15 +141,15 @@ df = pd.DataFrame({
     'length': lengths,
     't_ipc2_s': t_ipc2,
     't_svr19_s': t_svr19,
-    't_piesm_gpu_s': t_piesm_gpu,
-    't_piesm_cpu_s': t_piesm_cpu,
+    't_esmpi_gpu_s': t_esmpi_gpu,
+    't_esmpi_cpu_s': t_esmpi_cpu,
 })
 df.to_csv(str(out_csv), index=False, encoding='utf-8-sig')
 print(f'\nSaved {out_csv}')
 print(f'IPC2          median {np.median(t_ipc2)*1e3:.3f} ms  mean {np.mean(t_ipc2)*1e3:.3f} ms')
 print(f'IPC2.svr.19   median {np.median(t_svr19)*1e3:.3f} ms  mean {np.mean(t_svr19)*1e3:.3f} ms')
-print(f'pI-ESM (GPU)  median {np.median(t_piesm_gpu)*1e3:.3f} ms  mean {np.mean(t_piesm_gpu)*1e3:.3f} ms')
-print(f'pI-ESM (CPU)  median {np.median(t_piesm_cpu)*1e3:.3f} ms  mean {np.mean(t_piesm_cpu)*1e3:.3f} ms')
+print(f'ESMpI (GPU)  median {np.median(t_esmpi_gpu)*1e3:.3f} ms  mean {np.mean(t_esmpi_gpu)*1e3:.3f} ms')
+print(f'ESMpI (CPU)  median {np.median(t_esmpi_cpu)*1e3:.3f} ms  mean {np.mean(t_esmpi_cpu)*1e3:.3f} ms')
 
 # ---------- Plot ----------
 import matplotlib
@@ -160,8 +160,8 @@ import shutil
 # Original colors
 C_GRAY = '#95A5A6'   # IPC2
 C_BLUE = 'steelblue'  # IPC2.svr.19
-C_BROWN = '#dd8452'  # pI-ESM GPU
-C_RED = '#c0392b'    # pI-ESM CPU
+C_BROWN = '#dd8452'  # ESMpI GPU
+C_RED = '#c0392b'    # ESMpI CPU
 
 # Font/line +30%
 F_TICK = 11 * 1.3   # = 14.3
@@ -178,14 +178,14 @@ ax.scatter(lengths, t_ipc2, s=25, alpha=0.6, color=C_GRAY,
 ax.scatter(lengths, t_svr19, s=25, alpha=0.6, color=C_BLUE,
            edgecolor='white', linewidth=0.2, marker='o',
            label='IPC2.svr.19')
-ax.scatter(lengths, t_piesm_gpu, s=25, alpha=0.6, color=C_BROWN,
+ax.scatter(lengths, t_esmpi_gpu, s=25, alpha=0.6, color=C_BROWN,
            edgecolor='white', linewidth=0.2, marker='^',
-           label='pI-ESM GPU')
-ax.scatter(lengths, t_piesm_cpu, s=25, alpha=0.5, color=C_RED,
+           label='ESMpI GPU')
+ax.scatter(lengths, t_esmpi_cpu, s=25, alpha=0.5, color=C_RED,
            edgecolor='white', linewidth=0.2, marker='D',
-           label='pI-ESM CPU')
+           label='ESMpI CPU')
 ax.set_xlabel('Sequence length', fontsize=F_LABEL)
-ax.set_ylabel('time (s)', fontsize=F_LABEL)
+ax.set_ylabel('Time (s)', fontsize=F_LABEL)
 ax.set_ylim(-0.5, 6.5)
 ax.set_yticks([0, 2, 4, 6])
 ax.tick_params(axis='both', labelsize=F_TICK, width=LW_TICK, length=5)
