@@ -87,6 +87,10 @@ afm = pd.read_csv(os.path.join(INP, "pi_af.csv"))             # M8 SVR
 z44 = pd.read_csv(os.path.join(INP, "pypka_exp_z44.csv"))
 pk = pd.read_csv(os.path.join(INP, "pkalm_piprott.csv"))
 ipc = pd.read_csv(os.path.join(INP, "IPC_protein_25.csv"))
+lab = pd.read_csv(os.path.join(ROOT, "data", "mapping", "z46d_source_labels.csv"))
+lab_te = (lab[lab["split"] == "test_25"]
+          .sort_values("seq_no_full")
+          .reset_index(drop=True))
 
 seqs = {i + 1: str(s).strip().upper() for i, s in enumerate(ipc["sequence"])}
 
@@ -193,6 +197,33 @@ keep_cols = ["seq_no", "source", "conf_class", "exp_pI",
 keep_cols = list(dict.fromkeys(keep_cols))   # af_cols contains source/conf_class/exp_pI, deduplicate preserving order
 da[keep_cols].to_csv(os.path.join(OUT, "bench_all581_per_protein.csv"),
                      index=False, encoding="utf-8-sig")
+
+# Human-readable per-protein prediction table (one committed copy lives in
+# data/reference_results/; this regenerates it under results/tables/).
+friendly = pd.DataFrame({
+    "seq_no": lab_te["seq_no_full"].values,
+    "uniprot_acc": lab_te["uniprot_acc"].values,
+    "source": lab_te["source"].values,
+    "length": [len(seqs[int(s)]) for s in lab_te["seq_no_full"]],
+    "exp_pI": da.sort_values("seq_no")["exp_pI"].values,
+    "pI_ESMpI": da.sort_values("seq_no")["pI_ESMpI"].values,
+    "pI_F19": da.sort_values("seq_no")["M8_IPC2_svr"].round(4).values,
+    "pI_IPC2_pKa": da.sort_values("seq_no")["M3_ipc_9param_AF"].round(4).values,
+    "pI_GBMS": da.sort_values("seq_no")["M3_our_9param_AF"].round(4).values,
+    "sequence": [seqs[int(s)] for s in lab_te["seq_no_full"]],
+})
+friendly_path = os.path.join(OUT, "per_protein_predictions.csv")
+friendly.to_csv(friendly_path, index=False, encoding="utf-8-sig")
+frozen_friendly = os.path.join(ROOT, "data", "reference_results",
+                               "per_protein_predictions.csv")
+if os.path.exists(frozen_friendly):
+    fz = pd.read_csv(frozen_friendly)
+    same = (len(fz) == len(friendly)
+            and (fz["pI_ESMpI"].round(4).values == friendly["pI_ESMpI"].round(4).values).all()
+            and (fz["exp_pI"].round(4).values == friendly["exp_pI"].round(4).values).all())
+    print(f"[check] per_protein_predictions.csv {'matches' if same else 'MISMATCH vs'} "
+          f"frozen reference (n={len(friendly)})")
+print("Human-readable per-protein predictions:", friendly_path)
 
 METHODS_ALL = [
     ("ESMpI (this_work)",        "pI_ESMpI",               "Sequence"),

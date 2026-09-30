@@ -54,7 +54,7 @@ TRF 从 13 个起点中的任意一个确定性收敛，单起点约 0.4 秒，1
 
 581 条测试集的逐蛋白预测（实验 pI、IPC2 基线、GBMS 基线、IPC2.svr.19、ESMpI）
 已整理为可读 CSV：
-[results/tables/per_protein_predictions.csv](results/tables/per_protein_predictions.csv)
+[data/reference_results/per_protein_predictions.csv](data/reference_results/per_protein_predictions.csv)
 
 ---
 
@@ -65,6 +65,7 @@ TRF 从 13 个起点中的任意一个确定性收敛，单起点约 0.4 秒，1
 - Python ≥ 3.10
 - Git（可选，用于克隆仓库）
 - Conda（推荐）或任意 Python 3.10+ 环境
+- [Git LFS](https://git-lfs.com)——嵌入文件（.npz）与结构压缩包（.zip）通过 Git LFS 存储。新版 Git for Windows 及官方 macOS/Linux 安装包已自带；可用 `git lfs version` 检查（Ubuntu/Debian：`sudo apt install git-lfs`）。未安装 LFS 时 clone 得到的是指针文件而非真实数据。
 
 ### 安装（Conda，推荐）
 
@@ -207,6 +208,7 @@ ESMpI/
 | `pypka_exp_z44.csv` | `data/benchmark/` | 18 KB | PypKa 实验结构预测 |
 | `perm_pka_samples.csv` / `perm_pka_summary.csv` | `data/reference_results/` | 184 KB | 冻结的 1000 次置换 pKa 样本与汇总 |
 | `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | 冻结的逐蛋白端到端推理时间（IPC2、IPC2.svr.19、ESMpI GPU/CPU）|
+| `per_protein_predictions.csv` | `data/reference_results/` | 254 KB | 全部 581 条测试蛋白的逐蛋白预测（可读 CSV，含 UniProt 编号）|
 | `int8_deployment_description.txt` | `data/reference_results/` | 0.6 KB | INT8 部署推理描述与基准测试环境 |
 | `table_ipc2_protocol.csv` | `data/reference_results/` | 2 KB | 冻结的 IPC2 协议口径表 |
 | `alphafold2_structures.zip` | `data/structures/` | 28.9 MB | 581 条 AF2 预测结构（按 seq_no 命名）|

@@ -60,8 +60,15 @@ for i in range(N):
 # ---------- Method 3: ESMpI on GPU and CPU ----------
 print('Loading ESM-2 150M ...')
 os.environ['HF_HUB_OFFLINE'] = '1'  # use local cache, no network
-import torch
-from transformers import EsmTokenizer, EsmModel
+try:
+    import torch
+    from transformers import EsmTokenizer, EsmModel
+except ImportError as e:
+    sys.exit(
+        f'Missing optional dependency: {e}\n'
+        'This benchmark requires the full ESM-2 stack. Install with:\n'
+        '    pip install torch transformers'
+    )
 
 model_name = 'facebook/esm2_t30_150M_UR50D'
 tokenizer = EsmTokenizer.from_pretrained(model_name)
@@ -198,6 +205,8 @@ fig.savefig(str(out_png), dpi=300)
 plt.close(fig)
 print(f'Saved {out_png}')
 
-si_dir = pathlib.Path(r'd:\projects\aiProject1\z102_reproduce\paper_work\Draft\figure\si')
-shutil.copy(str(out_png), str(si_dir / 'SI_figure_inference_time.png'))
-print(f'Copied to {si_dir / "SI_figure_inference_time.png"}')
+# Optional: mirror the figure into a local SI figure directory (set SI_FIG_DIR).
+si_dir = os.environ.get('SI_FIG_DIR')
+if si_dir and pathlib.Path(si_dir).is_dir():
+    shutil.copy(str(out_png), str(pathlib.Path(si_dir) / 'SI_figure_inference_time.png'))
+    print(f'Copied to {pathlib.Path(si_dir) / "SI_figure_inference_time.png"}')

@@ -59,7 +59,7 @@ See `scripts/07_permutation_pka.py` for the full optimization implementation.
 
 The 581 test-set predictions (experimental pI, IPC2 baseline, GBMS baseline,
 IPC2.svr.19, and ESMpI) are available as a human-readable CSV:
-[results/tables/per_protein_predictions.csv](results/tables/per_protein_predictions.csv)
+[data/reference_results/per_protein_predictions.csv](data/reference_results/per_protein_predictions.csv)
 
 ---
 
@@ -70,6 +70,7 @@ IPC2.svr.19, and ESMpI) are available as a human-readable CSV:
 - Python ≥ 3.10
 - Git (optional, for cloning)
 - Conda (recommended) or any Python 3.10+ environment
+- [Git LFS](https://git-lfs.com) — the embedding (`.npz`) and structure-archive (`.zip`) files are stored with Git LFS. It is bundled with modern Git for Windows and the official macOS/Linux Git installers; verify with `git lfs version` (Ubuntu/Debian: `sudo apt install git-lfs`). Cloning without LFS yields pointer files instead of data.
 
 ### Installation (Conda, recommended)
 
@@ -212,6 +213,7 @@ ESMpI/
 | `pypka_exp_z44.csv` | `data/benchmark/` | 18 KB | PypKa predictions on experimental structures |
 | `perm_pka_samples.csv` / `perm_pka_summary.csv` | `data/reference_results/` | 184 KB | Frozen 1000-iteration permutation pKa samples and summary |
 | `bench_inference_time_e2e.csv` | `data/reference_results/` | 52 KB | Frozen per-protein end-to-end inference times (IPC2, IPC2.svr.19, ESMpI GPU/CPU) |
+| `per_protein_predictions.csv` | `data/reference_results/` | 254 KB | Human-readable per-protein predictions for all 581 test proteins |
 | `int8_deployment_description.txt` | `data/reference_results/` | 0.6 KB | INT8 deployment inference description and benchmark environment |
 | `alphafold2_structures.zip` | `data/structures/` | 28.9 MB | 581 AF2-predicted structures (seq_no-named, from AF2 pipeline) |
 | `experimental_pdb_A_high_confidence.zip` | `data/structures/` | 2.4 MB | 61 high-confidence experimental PDBs (A61 subset, Table 2) |

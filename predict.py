@@ -3,9 +3,9 @@
 predict: predict isoelectric point (pI) for user-provided protein sequences.
 
 Two modes:
-  1. Full mode (requires GPU + transformers + fair-esm): extracts ESM-2 150M
-     embeddings, applies 7-type weighted pooling, and predicts with the
-     published ESMpI residual SVR model.
+  1. Full mode (requires torch + transformers; GPU recommended but CPU works):
+     extracts ESM-2 150M embeddings, applies 7-type weighted pooling, and
+     predicts with the published ESMpI residual SVR model.
   2. Fallback mode (no GPU): computes only the IPC2 9-pKa physical baseline
      via the Henderson-Hasselbalch bisection engine. No ESM embedding needed.
 
@@ -80,7 +80,7 @@ def predict_esm(sequences, device='auto'):
         import torch
         from transformers import AutoTokenizer, EsmModel
     except ImportError:
-        print("WARNING: torch/transformers/fair-esm not found. "
+        print("WARNING: torch/transformers not found. "
               "Running in baseline-only mode (no ESM correction).")
         return None
 
