@@ -150,6 +150,10 @@ ESMpI/
 │
 ├── predict.py                # Predict pI for user-provided sequences (CLI)
 │
+├── IPC_protein/              # Original raw IPC2 train/test datasets (as published)
+│   ├── IPC_protein_75.csv    #   Training split: 1743 proteins (exp_pI, sequence)
+│   └── IPC_protein_25.csv    #   Test split: 581 proteins (exp_pI, sequence)
+│
 ├── scripts/                  # Pipeline scripts (run in order 01 → 10)
 │   ├── 01_generate_predictions.py   # ESMpI predictions → data/predictions/z166_preds.npz
 │   ├── 02_reproduce_benchmark.py    # Performance benchmark tables (581 full + 61 PDB subset)
@@ -196,6 +200,8 @@ ESMpI/
 
 | File | Location | Size | Description |
 |------|----------|------|-------------|
+| `IPC_protein_75.csv` | `IPC_protein/` | 667 KB | Original IPC2 training split, 1743 proteins (`exp_pI`, `sequence`); 4 sequences contain U/Z, cleaned for training (see dictionary) |
+| `IPC_protein_25.csv` | `IPC_protein/` | 225 KB | Original IPC2 test split, 581 proteins (`exp_pI`, `sequence`); 3 sequences contain U/B, cleaned for evaluation (see dictionary) |
 | `z82_150m_pertype_train.npz` | `data/embeddings/` | 16.3 MB | ESM-2 150M per-type embeddings (train, 1743×7×640) |
 | `z82_150m_pertype_test.npz` | `data/embeddings/` | 5.5 MB | ESM-2 150M per-type embeddings (test, 581×7×640) |
 | `z81_features_train.csv` | `data/features/` | 3.1 MB | Physical features + 19 pKa-scale pI values (train) |

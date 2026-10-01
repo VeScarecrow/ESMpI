@@ -145,6 +145,10 @@ ESMpI/
 │
 ├── predict.py                # 预测用户序列的 pI（命令行工具）
 │
+├── IPC_protein/              # 原始 IPC2 训练/测试数据集（发表原貌）
+│   ├── IPC_protein_75.csv    #   训练集：1743 条蛋白（exp_pI, sequence）
+│   └── IPC_protein_25.csv    #   测试集：581 条蛋白（exp_pI, sequence）
+│
 ├── scripts/                  # 流水线脚本（按 01 → 10 顺序运行）
 │   ├── 01_generate_predictions.py   # ESMpI 预测 → data/predictions/z166_preds.npz
 │   ├── 02_reproduce_benchmark.py    # 性能基准表格（581 全集 + 61 蛋白 PDB 子集）
@@ -191,6 +195,8 @@ ESMpI/
 
 | 文件 | 位置 | 大小 | 说明 |
 |------|------|------|------|
+| `IPC_protein_75.csv` | `IPC_protein/` | 667 KB | 原始 IPC2 训练集，1743 条蛋白（`exp_pI`、`sequence`）；4 条序列含 U/Z，训练前已清洗（见数据字典）|
+| `IPC_protein_25.csv` | `IPC_protein/` | 225 KB | 原始 IPC2 测试集，581 条蛋白（`exp_pI`、`sequence`）；3 条序列含 U/B，评估前已清洗（见数据字典）|
 | `z82_150m_pertype_train.npz` | `data/embeddings/` | 16.3 MB | ESM-2 150M 七类嵌入（训练集，1743×7×640）|
 | `z82_150m_pertype_test.npz` | `data/embeddings/` | 5.5 MB | ESM-2 150M 七类嵌入（测试集，581×7×640）|
 | `z81_features_train.csv` | `data/features/` | 3.1 MB | 物理特征 + 19 套 pKa 标度 pI（训练集）|

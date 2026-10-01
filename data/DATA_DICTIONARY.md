@@ -1,8 +1,47 @@
 # Data Dictionary
 
-Last updated: 2026-09-29
+Last updated: 2026-10-01
 
-All paths are relative to this file's parent directory (`data/`).
+All paths are relative to this file's parent directory (`data/`), except the
+`IPC_protein/` section, which lives at the repository root (`../IPC_protein/`).
+
+---
+
+## IPC_protein/ (repository root) — Original raw train/test datasets
+
+### IPC_protein_75.csv
+Original IPC2 training split (75%) as published, unmodified.
+
+| Column | Description |
+|--------|-------------|
+| `exp_pI` | Experimental isoelectric point (unit: pH) |
+| `sequence` | Protein amino acid sequence (single-letter IUPAC) |
+
+**Rows:** 1743.
+**Note:** 4 sequences contain non-standard residues in this raw file (3 with
+`U`, 1 with `Z`). For model training they are cleaned in place (`U` to `C`,
+`Z` to `Q`); all pipeline artifacts (`features/z81_features_train.csv`,
+embeddings) use the cleaned sequences. The remaining 1739 sequences and all
+`exp_pI` values match the training feature table exactly.
+
+### IPC_protein_25.csv
+Original IPC2 test split (25%) as published, unmodified. Identical to
+`benchmark/IPC_protein_25.csv` (kept there for pipeline input compatibility).
+
+| Column | Description |
+|--------|-------------|
+| `exp_pI` | Experimental isoelectric point (unit: pH) |
+| `sequence` | Protein amino acid sequence (single-letter IUPAC) |
+
+**Rows:** 581.
+**Note:** 3 sequences contain non-standard residues in this raw file (1 with
+`U`, 2 with `B`); they are cleaned in place (`U` to `C`, `B` to `N`) in
+`features/z81_features_test.csv`. The remaining 578 sequences and all
+`exp_pI` values match the test feature table exactly.
+
+**Cleaning rules (both files):** `U` (selenocysteine) to `C`, `Z` (Glx) to
+`Q`, `B` (Asx) to `N`. Only 7 sequences in total are affected; all other
+sequences and every `exp_pI` value are untouched.
 
 ---
 
