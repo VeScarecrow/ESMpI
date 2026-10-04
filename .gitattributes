@@ -3,3 +3,4 @@
 # Small prediction anchors are stored as regular Git blobs (committed before LFS)
 data/predictions/z166_preds.npz -filter -diff -merge
 data/benchmark/z166_preds.npz -filter -diff -merge
+benchmark/expected_outputs/z166_preds.npz -filter -diff -merge

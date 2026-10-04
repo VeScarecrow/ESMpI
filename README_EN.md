@@ -150,6 +150,12 @@ ESMpI/
 │
 ├── predict.py                # Predict pI for user-provided sequences (CLI)
 │
+├── benchmark/                # Self-contained one-command model-metric reproduction
+│   ├── run_benchmark.py      #   Full retrain: 5-fold OOF + one-time test, anchored checks
+│   ├── inputs/               #   Copied inputs (embeddings via Git LFS, features, IPC tables)
+│   ├── expected_outputs/     #   Frozen predictions + published metrics
+│   └── outputs/              #   Regenerated metrics/predictions (gitignored)
+│
 ├── IPC_protein/              # Original raw IPC2 train/test datasets (as published)
 │   ├── IPC_protein_75.csv    #   Training split: 1743 proteins (exp_pI, sequence)
 │   └── IPC_protein_25.csv    #   Test split: 581 proteins (exp_pI, sequence)
@@ -263,6 +269,21 @@ sites are backfilled with Thurlkill (2006) model-compound pKa values.
 ---
 
 ## Reproduction
+
+### Quickest check — self-contained model benchmark (~20 s, no GPU)
+
+Rebuilds the published ESMpI model from scratch (five-seed 5-fold OOF on 1743
+training proteins + one full retrain + a single 581-protein test evaluation)
+using only the files copied under `benchmark/`, and verifies the reproduced
+predictions against a frozen anchor:
+
+```bash
+python benchmark/run_benchmark.py
+```
+
+Expected output: train OOF RMSE 0.8002, test RMSE **0.8104** (MAE 0.5573,
+R² 0.6478), ending with `ALL CHECKS PASSED`. See
+[benchmark/README.md](benchmark/README.md) for details.
 
 ### Tier 1 — Reproduce Tables (1 minute, no GPU)
 

@@ -145,6 +145,12 @@ ESMpI/
 │
 ├── predict.py                # 预测用户序列的 pI（命令行工具）
 │
+├── benchmark/                # 自包含的一条命令模型指标复现
+│   ├── run_benchmark.py      #   全量重训：5 折 OOF + 测试集只评一次，含冻结锚点校验
+│   ├── inputs/               #   复制的输入（嵌入走 Git LFS、特征表、IPC 原始划分）
+│   ├── expected_outputs/     #   冻结预测与论文发表指标
+│   └── outputs/              #   重新生成的指标/预测（gitignore 忽略）
+│
 ├── IPC_protein/              # 原始 IPC2 训练/测试数据集（发表原貌）
 │   ├── IPC_protein_75.csv    #   训练集：1743 条蛋白（exp_pI, sequence）
 │   └── IPC_protein_25.csv    #   测试集：581 条蛋白（exp_pI, sequence）
@@ -258,6 +264,19 @@ Table 2（A61 子集）中结构方法使用**实验测得 PDB**，Table 1（全
 ---
 
 ## 复现
+
+### 最快验证——自包含模型基准（约 20 秒，无需 GPU）
+
+仅使用 `benchmark/` 下复制的输入文件，从零重建论文发表的 ESMpI 模型
+（1743 条训练蛋白五 seed 五折 OOF + 一次全量重训 + 581 条测试蛋白仅评估一次），
+并将重算预测与冻结锚点逐位比对：
+
+```bash
+python benchmark/run_benchmark.py
+```
+
+预期输出：训练 OOF RMSE 0.8002，测试 RMSE **0.8104**（MAE 0.5573，R² 0.6478），
+末行打印 `ALL CHECKS PASSED`。详见 [benchmark/README.md](benchmark/README.md)。
 
 ### 第一层——复现表格（1 分钟，无需 GPU）
 
